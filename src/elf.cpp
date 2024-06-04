@@ -19,4 +19,8 @@ ELF::ELF(istream& stream)
     {
         throw invalid_argument("invalid ELF magic");
     }
+
+    ei_class = static_cast<ELFClass>(stream.get());
+    ei_data = static_cast<ELFFormat>(stream.get());
+    ei_version = static_cast<ELFVersion>(stream.get());
 }
