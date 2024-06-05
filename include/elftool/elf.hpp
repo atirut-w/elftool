@@ -1,35 +1,83 @@
 #pragma once
 #include <istream>
+#include <bit>
 
 namespace ELFTool
 {
     enum class ELFClass
     {
-        ELFCLASSNONE = 0,
-        ELFCLASS32 = 1,
-        ELFCLASS64 = 2
+        NONE,
+        CLASS32,
+        CLASS64
     };
 
     enum class ELFFormat
     {
-        ELFDATANONE = 0,
-        ELFDATA2LSB = 1,
-        ELFDATA2MSB = 2
+        NONE,
+        LSB,
+        MSB
     };
 
     enum class ELFVersion
     {
-        EV_NONE = 0,
-        EV_CURRENT = 1
+        NONE,
+        CURRENT
+    };
+
+    enum class ELFOSABI
+    {
+        NONE,
+        SYSV,
+        HPUX,
+        NETBSD,
+        LINUX,
+        SOLARIS,
+        IRIX,
+        FREEBSD,
+        TRU64,
+        ARM,
+        STANDALONE
+    };
+
+    enum class ELFType
+    {
+        NONE,
+        REL,
+        EXEC,
+        DYN,
+        CORE
     };
     
     class ELF
     {
+    private:
+        template <typename T>
+        T read(std::istream& stream)
+        {
+            T value;
+            stream.read(reinterpret_cast<char*>(&value), sizeof(T));
+            
+            // If the ELF file is not in native endianness, swap the bytes
+            if ((ei_data == ELFFormat::LSB && std::endian::native == std::endian::big) || (ei_data == ELFFormat::MSB && std::endian::native == std::endian::little))
+            {
+                for (size_t i = 0; i < sizeof(T) / 2; i++)
+                {
+                    std::swap(reinterpret_cast<char*>(&value)[i], reinterpret_cast<char*>(&value)[sizeof(T) - i - 1]);
+                }
+            }
+
+            return value;
+        }
+
     public:
         ELF(std::istream& stream);
 
         ELFClass ei_class;
         ELFFormat ei_data;
         ELFVersion ei_version;
+        ELFOSABI ei_osabi;
+        int ei_abiversion;
+
+        ELFType e_type;
     };
 }
