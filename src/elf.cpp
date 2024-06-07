@@ -86,4 +86,39 @@ ELF::ELF(istream &stream)
             stream.read(reinterpret_cast<char *>(&sections[i].data[0]), sections[i].data.size());
         }
     }
+
+    if (e_phoff != 0)
+    {
+        vector<uint64_t> segment_data_offsets;
+
+        stream.seekg(e_phoff);
+        for (int i = 0; i < e_phnum; i++)
+        {
+            Segment segment;
+            segment.type = static_cast<SegmentType>(read<uint32_t>(stream));
+            if (bitness == Bitness::BITS64)
+            {
+                segment.flags = read<uint32_t>(stream);
+            }
+            auto p_offset = read_address(stream);
+            segment.virtual_address = read_address(stream);
+            segment.physical_address = read_address(stream);
+            auto p_filesz = read_address(stream);
+            auto p_memsz = read_address(stream); // TODO: Skip?
+            if (bitness == Bitness::BITS32)
+            {
+                segment.flags = read<uint32_t>(stream);
+            }
+            segment.alignment = read_address(stream);
+
+            segment.data.resize(p_filesz);
+            segment_data_offsets.push_back(p_offset);
+        }
+
+        for (int i = 0; i < e_phnum; i++)
+        {
+            stream.seekg(segment_data_offsets[i]);
+            stream.read(reinterpret_cast<char *>(&segments[i].data[0]), segments[i].data.size());
+        }
+    }
 }

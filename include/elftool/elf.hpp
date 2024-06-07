@@ -4,6 +4,7 @@
 #include <cstdint>
 #include <vector>
 #include <elftool/section.hpp>
+#include <elftool/segment.hpp>
 
 namespace ELFTool
 {
@@ -107,5 +108,6 @@ namespace ELFTool
         int flags;
 
         std::vector<Section> sections;
+        std::vector<Segment> segments;
     };
 }
