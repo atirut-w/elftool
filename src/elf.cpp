@@ -53,4 +53,6 @@ ELF::ELF(istream& stream)
     e_shentsize = read<uint16_t>(stream);
     e_shnum = read<uint16_t>(stream);
     e_shstrndx = read<uint16_t>(stream);
+
+    // TODO: Sanity checks
 }
