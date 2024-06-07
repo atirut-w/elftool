@@ -8,7 +8,7 @@ using namespace ELFTool;
 
 uint64_t ELF::read_address(istream& stream)
 {
-    if (ei_class == ELFClass::CLASS32)
+    if (bitness == Bitness::BITS32)
     {
         return read<uint32_t>(stream);
     }
@@ -33,17 +33,17 @@ ELF::ELF(istream& stream)
         throw invalid_argument("invalid ELF magic");
     }
 
-    ei_class = static_cast<ELFClass>(stream.get());
-    ei_data = static_cast<ELFFormat>(stream.get());
+    bitness = static_cast<Bitness>(stream.get());
+    endianness = static_cast<Endianness>(stream.get());
     ei_version = static_cast<ELFVersion>(stream.get());
-    ei_osabi = static_cast<ELFOSABI>(stream.get());
-    ei_abiversion = stream.get();
+    abi = static_cast<ABI>(stream.get());
+    abi_version = stream.get();
     stream.ignore(7);
 
-    e_type = static_cast<ELFType>(read<uint16_t>(stream));
-    e_machine = static_cast<ELFMachine>(read<uint16_t>(stream));
+    type = static_cast<ELFType>(read<uint16_t>(stream));
+    machine = static_cast<MachineType>(read<uint16_t>(stream));
     e_version = read<uint32_t>(stream);
-    e_entry = read_address(stream);
+    entry_point = read_address(stream);
     auto e_phoff = read_address(stream);
     auto e_shoff = read_address(stream);
     flags = read<uint32_t>(stream);

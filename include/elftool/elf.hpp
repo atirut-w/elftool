@@ -5,14 +5,14 @@
 
 namespace ELFTool
 {
-    enum class ELFClass
+    enum class Bitness
     {
         NONE,
-        CLASS32,
-        CLASS64
+        BITS32,
+        BITS64
     };
 
-    enum class ELFFormat
+    enum class Endianness
     {
         NONE,
         LSB,
@@ -25,7 +25,7 @@ namespace ELFTool
         CURRENT
     };
 
-    enum class ELFOSABI
+    enum class ABI
     {
         SYSV,
         HPUX,
@@ -56,7 +56,7 @@ namespace ELFTool
         CORE
     };
 
-    enum class ELFMachine
+    enum class MachineType
     {
         NONE,
         X86 = 0x03,
@@ -73,7 +73,7 @@ namespace ELFTool
             T value;
             
             // If the ELF file is not in native endianness, swap the bytes
-            if ((ei_data == ELFFormat::LSB && std::endian::native == std::endian::big) || (ei_data == ELFFormat::MSB && std::endian::native == std::endian::little))
+            if ((endianness == Endianness::LSB && std::endian::native == std::endian::big) || (endianness == Endianness::MSB && std::endian::native == std::endian::little))
             {
                 for (size_t i = 0; i < sizeof(T); i++)
                 {
@@ -93,16 +93,16 @@ namespace ELFTool
     public:
         ELF(std::istream& stream);
 
-        ELFClass ei_class;
-        ELFFormat ei_data;
+        Bitness bitness;
+        Endianness endianness;
         ELFVersion ei_version;
-        ELFOSABI ei_osabi;
-        int ei_abiversion;
+        ABI abi;
+        int abi_version;
 
-        ELFType e_type;
-        ELFMachine e_machine;
+        ELFType type;
+        MachineType machine;
         int e_version;
-        uint64_t e_entry;
+        uint64_t entry_point;
         int flags;
     };
 }
