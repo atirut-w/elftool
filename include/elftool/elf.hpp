@@ -103,11 +103,5 @@ namespace ELFTool
         int e_version;
         uint64_t e_entry;
         int flags;
-        int e_ehsize;
-        int e_phentsize;
-        int e_phnum;
-        int e_shentsize;
-        int e_shnum;
-        int e_shstrndx;
     };
 }

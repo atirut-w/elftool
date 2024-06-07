@@ -47,12 +47,12 @@ ELF::ELF(istream& stream)
     auto e_phoff = read_address(stream);
     auto e_shoff = read_address(stream);
     flags = read<uint32_t>(stream);
-    e_ehsize = read<uint16_t>(stream);
-    e_phentsize = read<uint16_t>(stream);
-    e_phnum = read<uint16_t>(stream);
-    e_shentsize = read<uint16_t>(stream);
-    e_shnum = read<uint16_t>(stream);
-    e_shstrndx = read<uint16_t>(stream);
+    auto e_ehsize = read<uint16_t>(stream);
+    auto e_phentsize = read<uint16_t>(stream);
+    auto e_phnum = read<uint16_t>(stream);
+    auto e_shentsize = read<uint16_t>(stream);
+    auto e_shnum = read<uint16_t>(stream);
+    auto e_shstrndx = read<uint16_t>(stream);
 
     // TODO: Sanity checks
 }
