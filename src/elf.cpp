@@ -6,7 +6,7 @@
 using namespace std;
 using namespace ELFTool;
 
-uint64_t ELF::read_address(istream& stream)
+uint64_t ELF::read_address(istream &stream)
 {
     if (bitness == Bitness::BITS32)
     {
@@ -18,7 +18,7 @@ uint64_t ELF::read_address(istream& stream)
     }
 }
 
-ELF::ELF(istream& stream)
+ELF::ELF(istream &stream)
 {
     if (!stream)
     {

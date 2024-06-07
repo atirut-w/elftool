@@ -63,35 +63,35 @@ namespace ELFTool
         AMD64 = 0x3e,
         Z80 = 0xdc,
     };
-    
+
     class ELF
     {
     private:
         template <typename T>
-        T read(std::istream& stream)
+        T read(std::istream &stream)
         {
             T value;
-            
+
             // If the ELF file is not in native endianness, swap the bytes
             if ((endianness == Endianness::LSB && std::endian::native == std::endian::big) || (endianness == Endianness::MSB && std::endian::native == std::endian::little))
             {
                 for (size_t i = 0; i < sizeof(T); i++)
                 {
-                    reinterpret_cast<char*>(&value)[i] = stream.get();
+                    reinterpret_cast<char *>(&value)[i] = stream.get();
                 }
             }
             else
             {
-                stream.read(reinterpret_cast<char*>(&value), sizeof(T));
+                stream.read(reinterpret_cast<char *>(&value), sizeof(T));
             }
 
             return value;
         }
 
-        uint64_t read_address(std::istream& stream);
+        uint64_t read_address(std::istream &stream);
 
     public:
-        ELF(std::istream& stream);
+        ELF(std::istream &stream);
 
         Bitness bitness;
         Endianness endianness;
