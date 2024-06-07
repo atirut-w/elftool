@@ -2,6 +2,8 @@
 #include <istream>
 #include <bit>
 #include <cstdint>
+#include <vector>
+#include <elftool/section.hpp>
 
 namespace ELFTool
 {
@@ -98,11 +100,12 @@ namespace ELFTool
         ELFVersion ei_version;
         ABI abi;
         int abi_version;
-
         ELFType type;
         MachineType machine;
         int e_version;
         uint64_t entry_point;
         int flags;
+
+        std::vector<Section> sections;
     };
 }

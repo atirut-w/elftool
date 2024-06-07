@@ -55,4 +55,35 @@ ELF::ELF(istream &stream)
     auto e_shstrndx = read<uint16_t>(stream);
 
     // TODO: Sanity checks
+    // TODO: Load program headers
+
+    if (e_shoff != 0)
+    {
+        vector<uint64_t> section_data_offsets;
+
+        stream.seekg(e_shoff);
+        for (int i = 0; i < e_shnum; i++)
+        {
+            Section section;
+            section.name_index = read<uint32_t>(stream);
+            section.type = static_cast<SectionType>(read<uint32_t>(stream));
+            section.flags = read_address(stream);
+            section.address = read_address(stream);
+            section_data_offsets.push_back(read_address(stream));
+            auto data_size = read_address(stream);
+            section.link = read<uint32_t>(stream);
+            section.info = read<uint32_t>(stream);
+            section.alignment = read_address(stream);
+            section.entry_size = read_address(stream);
+
+            section.data.resize(data_size);
+            sections.push_back(section);
+        }
+
+        for (int i = 0; i < e_shnum; i++)
+        {
+            stream.seekg(section_data_offsets[i]);
+            stream.read(reinterpret_cast<char *>(&sections[i].data[0]), sections[i].data.size());
+        }
+    }
 }
