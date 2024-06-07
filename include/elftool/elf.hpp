@@ -62,15 +62,18 @@ namespace ELFTool
         T read(std::istream& stream)
         {
             T value;
-            stream.read(reinterpret_cast<char*>(&value), sizeof(T));
             
             // If the ELF file is not in native endianness, swap the bytes
             if ((ei_data == ELFFormat::LSB && std::endian::native == std::endian::big) || (ei_data == ELFFormat::MSB && std::endian::native == std::endian::little))
             {
-                for (size_t i = 0; i < sizeof(T) / 2; i++)
+                for (size_t i = 0; i < sizeof(T); i++)
                 {
-                    std::swap(reinterpret_cast<char*>(&value)[i], reinterpret_cast<char*>(&value)[sizeof(T) - i - 1]);
+                    reinterpret_cast<char*>(&value)[i] = stream.get();
                 }
+            }
+            else
+            {
+                stream.read(reinterpret_cast<char*>(&value), sizeof(T));
             }
 
             return value;
