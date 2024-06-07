@@ -26,17 +26,24 @@ namespace ELFTool
 
     enum class ELFOSABI
     {
-        NONE,
         SYSV,
         HPUX,
         NETBSD,
         LINUX,
+        HURD,
         SOLARIS,
+        AIX,
         IRIX,
         FREEBSD,
         TRU64,
-        ARM,
-        STANDALONE
+        MODESTO,
+        OPENBSD,
+        OPENVMS,
+        NSK,
+        AROS,
+        FENIXOS,
+        CLOUDABI,
+        OPENVOS
     };
 
     enum class ELFType
