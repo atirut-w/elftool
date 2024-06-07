@@ -1,6 +1,7 @@
 #pragma once
 #include <istream>
 #include <bit>
+#include <cstdint>
 
 namespace ELFTool
 {
