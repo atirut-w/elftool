@@ -54,6 +54,14 @@ namespace ELFTool
         DYN,
         CORE
     };
+
+    enum class ELFMachine
+    {
+        NONE,
+        X86 = 0x03,
+        AMD64 = 0x3e,
+        Z80 = 0xdc,
+    };
     
     class ELF
     {
@@ -79,6 +87,8 @@ namespace ELFTool
             return value;
         }
 
+        uint64_t read_address(std::istream& stream);
+
     public:
         ELF(std::istream& stream);
 
@@ -89,5 +99,15 @@ namespace ELFTool
         int ei_abiversion;
 
         ELFType e_type;
+        ELFMachine e_machine;
+        int e_version;
+        uint64_t e_entry;
+        int flags;
+        int e_ehsize;
+        int e_phentsize;
+        int e_phnum;
+        int e_shentsize;
+        int e_shnum;
+        int e_shstrndx;
     };
 }

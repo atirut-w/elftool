@@ -6,6 +6,18 @@
 using namespace std;
 using namespace ELFTool;
 
+uint64_t ELF::read_address(istream& stream)
+{
+    if (ei_class == ELFClass::CLASS32)
+    {
+        return read<uint32_t>(stream);
+    }
+    else
+    {
+        return read<uint64_t>(stream);
+    }
+}
+
 ELF::ELF(istream& stream)
 {
     if (!stream)
@@ -29,4 +41,16 @@ ELF::ELF(istream& stream)
     stream.ignore(7);
 
     e_type = static_cast<ELFType>(read<uint16_t>(stream));
+    e_machine = static_cast<ELFMachine>(read<uint16_t>(stream));
+    e_version = read<uint32_t>(stream);
+    e_entry = read_address(stream);
+    auto e_phoff = read_address(stream);
+    auto e_shoff = read_address(stream);
+    flags = read<uint32_t>(stream);
+    e_ehsize = read<uint16_t>(stream);
+    e_phentsize = read<uint16_t>(stream);
+    e_phnum = read<uint16_t>(stream);
+    e_shentsize = read<uint16_t>(stream);
+    e_shnum = read<uint16_t>(stream);
+    e_shstrndx = read<uint16_t>(stream);
 }
