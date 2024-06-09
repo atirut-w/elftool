@@ -4,6 +4,7 @@
 #include <cstdint>
 #include <vector>
 #include <elftool/section.hpp>
+#include <ostream>
 
 namespace ELFTool
 {
@@ -75,6 +76,7 @@ namespace ELFTool
             T value;
 
             // If the ELF file is not in native endianness, swap the bytes
+            // TODO: Check if this actually works?
             if ((endianness == Endianness::LSB && std::endian::native == std::endian::big) || (endianness == Endianness::MSB && std::endian::native == std::endian::little))
             {
                 for (size_t i = 0; i < sizeof(T); i++)
@@ -90,7 +92,26 @@ namespace ELFTool
             return value;
         }
 
+        template <typename T>
+        void write(std::ostream &stream, T value)
+        {
+            // If the ELF file is not in native endianness, swap the bytes
+            // TODO: Check if this actually works?
+            if ((endianness == Endianness::LSB && std::endian::native == std::endian::big) || (endianness == Endianness::MSB && std::endian::native == std::endian::little))
+            {
+                for (size_t i = 0; i < sizeof(T); i++)
+                {
+                    stream.put(reinterpret_cast<char *>(&value)[i]);
+                }
+            }
+            else
+            {
+                stream.write(reinterpret_cast<char *>(&value), sizeof(T));
+            }
+        }
+
         uint64_t read_address(std::istream &stream);
+        void write_address(std::ostream &stream, uint64_t address);
 
     public:
         ELF(std::istream &stream);
@@ -105,7 +126,10 @@ namespace ELFTool
         int e_version;
         uint64_t entry_point;
         int flags;
+        int e_shstrndx;
 
         std::vector<Section> sections;
+
+        void write_elf(std::ostream &stream);
     };
 }
