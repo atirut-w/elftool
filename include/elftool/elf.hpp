@@ -116,17 +116,17 @@ namespace ELFTool
     public:
         ELF(std::istream &stream);
 
-        Bitness bitness;
-        Endianness endianness;
-        ELFVersion ei_version;
-        ABI abi;
-        int abi_version;
-        ELFType type;
-        MachineType machine;
-        int e_version;
-        uint64_t entry_point;
-        int flags;
-        int e_shstrndx;
+        Bitness bitness = Bitness::NONE;
+        Endianness endianness = Endianness::LSB;
+        ELFVersion ei_version = ELFVersion::CURRENT;
+        ABI abi = ABI::SYSV;
+        int abi_version = 0;
+        ELFType type = ELFType::NONE;
+        MachineType machine = MachineType::NONE;
+        int e_version = 1;
+        uint64_t entry_point = 0;
+        int flags = 0;
+        int e_shstrndx = 0;
 
         std::vector<Section> sections;
 
