@@ -42,14 +42,14 @@ namespace ELFTool
 
     struct Section
     {
-        int name_index;
-        SectionType type;
-        uint64_t flags;
-        uint64_t address;
+        int name_index = 0;
+        SectionType type = SectionType::NONE;
+        uint64_t flags = 0;
+        uint64_t address = 0;
         std::vector<uint8_t> data;
-        int link;
-        int info;
-        uint64_t alignment;
-        uint64_t entry_size;
+        int link = 0;
+        int info = 0;
+        uint64_t alignment = 1;
+        uint64_t entry_size = 0;
     };
 }
