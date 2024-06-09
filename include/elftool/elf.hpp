@@ -130,6 +130,6 @@ namespace ELFTool
 
         std::vector<Section> sections;
 
-        void write_elf(std::ostream &stream);
+        void write(std::ostream &stream);
     };
 }

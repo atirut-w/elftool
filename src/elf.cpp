@@ -102,7 +102,7 @@ ELF::ELF(istream &stream)
     }
 }
 
-void ELF::write_elf(ostream &stream)
+void ELF::write(ostream &stream)
 {
     if (!stream)
     {
