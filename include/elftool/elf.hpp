@@ -125,6 +125,7 @@ namespace ELFTool
         int e_version;
         uint64_t entry_point;
         int flags;
+        int e_shstrndx;
 
         std::vector<Section> sections;
     };

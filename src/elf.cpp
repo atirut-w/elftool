@@ -64,7 +64,7 @@ ELF::ELF(istream &stream)
     auto e_phnum = read<uint16_t>(stream);
     auto e_shentsize = read<uint16_t>(stream);
     auto e_shnum = read<uint16_t>(stream);
-    auto e_shstrndx = read<uint16_t>(stream);
+    e_shstrndx = read<uint16_t>(stream);
 
     // TODO: Sanity checks
     // TODO: Load program headers
