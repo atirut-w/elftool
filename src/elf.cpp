@@ -18,6 +18,18 @@ uint64_t ELF::read_address(istream &stream)
     }
 }
 
+void ELF::write_address(ostream &stream, uint64_t address)
+{
+    if (bitness == Bitness::BITS32)
+    {
+        write<uint32_t>(stream, address);
+    }
+    else
+    {
+        write<uint64_t>(stream, address);
+    }
+}
+
 ELF::ELF(istream &stream)
 {
     if (!stream)
