@@ -4,6 +4,7 @@
 #include <cstdint>
 #include <vector>
 #include <elftool/section.hpp>
+#include <ostream>
 
 namespace ELFTool
 {
@@ -128,5 +129,7 @@ namespace ELFTool
         int e_shstrndx;
 
         std::vector<Section> sections;
+
+        void write_elf(std::ostream &stream);
     };
 }

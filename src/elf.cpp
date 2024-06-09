@@ -2,6 +2,8 @@
 #include <stdexcept>
 #include <string>
 #include <cstdint>
+#include <algorithm>
+#include <map>
 
 using namespace std;
 using namespace ELFTool;
@@ -97,5 +99,89 @@ ELF::ELF(istream &stream)
             stream.seekg(section_data_offsets[i]);
             stream.read(reinterpret_cast<char *>(&sections[i].data[0]), sections[i].data.size());
         }
+    }
+}
+
+void ELF::write_elf(ostream &stream)
+{
+    if (!stream)
+    {
+        throw invalid_argument("invalid output stream");
+    }
+    
+    stream.write("\x7f""ELF", 4);
+    write<uint8_t>(stream, static_cast<uint8_t>(bitness));
+    write<uint8_t>(stream, static_cast<uint8_t>(endianness));
+    write<uint8_t>(stream, static_cast<uint8_t>(ei_version));
+    write<uint8_t>(stream, static_cast<uint8_t>(abi));
+    write<uint8_t>(stream, abi_version);
+    stream.write("\0\0\0\0\0\0\0", 7);
+
+    write<uint16_t>(stream, static_cast<uint16_t>(type));
+    write<uint16_t>(stream, static_cast<uint16_t>(machine));
+    write<uint32_t>(stream, e_version);
+    write_address(stream, entry_point);
+    auto e_phoff_offset = stream.tellp();
+    write_address(stream, 0);
+    auto e_shoff_offset = stream.tellp();
+    write_address(stream, 0);
+    write<uint32_t>(stream, flags);
+
+    if (bitness == Bitness::BITS32) // e_ehsize
+    {
+        write<uint16_t>(stream, 52);
+    }
+    else
+    {
+        write<uint16_t>(stream, 64);
+    }
+    
+    write<uint16_t>(stream, 0); // TODO: Segment entry size
+    write<uint16_t>(stream, 0); // TODO: Segment count
+
+    if (bitness == Bitness::BITS32)
+    {
+        write<uint16_t>(stream, 40);
+    }
+    else
+    {
+        write<uint16_t>(stream, 64);
+    }
+
+    write<uint16_t>(stream, sections.size());
+    write<uint16_t>(stream, e_shstrndx);
+
+    // TODO: Write segments
+
+    auto e_shoff = stream.tellp();
+    stream.seekp(e_shoff_offset);
+    write_address(stream, e_shoff);
+    stream.seekp(e_shoff);
+
+    vector<int> section_data_refs;
+    for (auto &section : sections)
+    {
+        write<uint32_t>(stream, section.name_index);
+        write<uint32_t>(stream, static_cast<uint32_t>(section.type));
+        write_address(stream, section.flags);
+        write_address(stream, section.address);
+        section_data_refs.push_back(stream.tellp());
+        write_address(stream, 0); // Data offset
+        write_address(stream, section.data.size());
+        write<uint32_t>(stream, section.link);
+        write<uint32_t>(stream, section.info);
+        write_address(stream, section.alignment);
+        write_address(stream, section.entry_size);
+    }
+
+    // Write section data
+    for (int i = 0; i < sections.size(); i++)
+    {
+        auto ref_offset = section_data_refs[i];
+        auto data_offset = stream.tellp();
+        stream.seekp(ref_offset);
+        write_address(stream, data_offset);
+        stream.seekp(data_offset);
+        stream.write(reinterpret_cast<char *>(&sections[i].data[0]), sections[i].data.size());
     }
 }
